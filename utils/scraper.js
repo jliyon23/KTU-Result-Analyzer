@@ -1,5 +1,4 @@
-const puppeteer = require('puppeteer-core');
-const chromium = require('@sparticuz/chromium-min');
+const puppeteer = require('puppeteer');
 
 // Helper function to add random delays that look like human behavior
 async function randomDelay(min = 1000, max = 3000) {
@@ -23,17 +22,18 @@ async function scrapeSemesterResults(username, password, semester) {
         password: password
     };
 
-    // Set up chromium options for serverless
-    await chromium.font();
     let browser;
     
     try {
-        // Launch browser with optimized serverless configuration
+        // Launch browser with optimized configuration
         browser = await puppeteer.launch({
-            args: chromium.args,
-            defaultViewport: chromium.defaultViewport,
-            executablePath: await chromium.executablePath(),
-            headless: true,
+            headless: 'new',
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-gpu'
+            ],
             ignoreHTTPSErrors: true
         });
 
