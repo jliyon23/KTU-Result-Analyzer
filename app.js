@@ -8,10 +8,23 @@ const { scrapeSemesterResults } = require('./utils/scraper');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// MongoDB connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ktu-results')
-    .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.error('MongoDB connection error:', err));
+// MongoDB connection with improved handling for serverless environments
+const connectDB = async () => {
+    try {
+        const connectionString = process.env.MONGODB_URI || 'mongodb://localhost:27017/ktu-results';
+        await mongoose.connect(connectionString, {
+            serverSelectionTimeoutMS: 5000
+        });
+        console.log('Connected to MongoDB');
+    } catch (err) {
+        console.error('MongoDB connection error:', err.message);
+        // Don't exit the process in serverless environment
+        // process.exit(1);
+    }
+};
+
+// Connect to MongoDB
+connectDB();
 
 // Middleware
 app.use(express.json());
@@ -206,6 +219,18 @@ app.post('/results', async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-}); 
+// Add error handling middleware
+app.use((err, req, res, next) => {
+    console.error('Server error:', err);
+    res.status(500).render('home', { error: 'Internal server error. Please try again later.' });
+});
+
+// For Vercel serverless deployment
+module.exports = app;
+
+// Only start the server if not in serverless environment
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(port, () => {
+        console.log(`Server is running on port ${port}`);
+    });
+} 

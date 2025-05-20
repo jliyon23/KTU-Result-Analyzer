@@ -22,16 +22,21 @@ async function scrapeSemesterResults(username, password, semester) {
         password: password
     };
 
+    // Enhanced Puppeteer configuration for serverless environments like Vercel
     const browser = await puppeteer.launch({
-        headless: true,
+        headless: 'new',
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
             '--disable-dev-shm-usage',
-            '--disable-gpu'
+            '--disable-gpu',
+            '--disable-web-security',
+            '--disable-features=IsolateOrigins',
+            '--disable-site-isolation-trials',
+            '--single-process'
         ],
         ignoreHTTPSErrors: true,
-        timeout: 30000
+        timeout: 60000
     });
 
     try {
@@ -134,7 +139,9 @@ async function scrapeSemesterResults(username, password, semester) {
         console.error('Error:', error);
         throw error;
     } finally {
-        await browser.close();
+        if (browser) {
+            await browser.close();
+        }
     }
 }
 
