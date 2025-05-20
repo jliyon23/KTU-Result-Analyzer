@@ -6,7 +6,7 @@ const Result = require('./models/Result');
 const { scrapeSemesterResults } = require('./utils/scraper');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 
 // MongoDB connection with improved handling
 const connectDB = async () => {
@@ -46,13 +46,19 @@ app.engine('hbs', engine({
 app.set('view engine', 'hbs');
 app.set('views', './views');
 
-// Health check route
+// Health check route for Azure
 app.get('/api/health', (req, res) => {
     res.json({
         status: 'ok',
         timestamp: new Date().toISOString(),
-        dbConnected: dbConnected
+        dbConnected: dbConnected,
+        environment: process.env.NODE_ENV || 'development'
     });
+});
+
+// Azure Web App warmup route
+app.get('/warmup', (req, res) => {
+    res.status(200).send('Application warmed up');
 });
 
 // Routes

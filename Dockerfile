@@ -1,6 +1,6 @@
 FROM node:18-slim
 
-# Install latest Chrome and required dependencies
+# Install Chrome and dependencies
 RUN apt-get update && apt-get install -y \
     fonts-liberation \
     gconf-service \
@@ -40,7 +40,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Create app directory
-WORKDIR /usr/src/app
+WORKDIR /home/site/wwwroot
 
 # Copy package files and install dependencies
 COPY package*.json ./
@@ -49,8 +49,13 @@ RUN npm install
 # Copy the rest of the application
 COPY . .
 
+# Set environment variables for Azure
+ENV PORT=8080 \
+    NODE_ENV=production \
+    WEBSITE_NODE_DEFAULT_VERSION=18.0.0
+
 # Expose the port the app runs on
-EXPOSE 3000
+EXPOSE 8080
 
 # Start the application
-CMD ["npm", "start"] 
+CMD ["node", "app.js"] 
