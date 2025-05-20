@@ -16,15 +16,19 @@ const connectDB = async () => {
             serverSelectionTimeoutMS: 5000
         });
         console.log('Connected to MongoDB');
+        return true;
     } catch (err) {
         console.error('MongoDB connection error:', err.message);
         // Don't exit the process in serverless environment
-        // process.exit(1);
+        return false;
     }
 };
 
 // Connect to MongoDB
-connectDB();
+let dbConnected = false;
+(async () => {
+    dbConnected = await connectDB();
+})();
 
 // Middleware
 app.use(express.json());
@@ -43,6 +47,15 @@ app.engine('hbs', engine({
 app.set('view engine', 'hbs');
 app.set('views', './views');
 
+// Health check route
+app.get('/api/health', (req, res) => {
+    res.json({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        dbConnected: dbConnected
+    });
+});
+
 // Routes
 app.get('/', (req, res) => {
     res.render('home');
@@ -50,6 +63,12 @@ app.get('/', (req, res) => {
 
 // New route for checking cached results
 app.post('/cached-results', async (req, res) => {
+    if (!dbConnected) {
+        return res.status(503).render('home', { 
+            error: 'Database connection unavailable. Please try again later.' 
+        });
+    }
+
     const { username, semester } = req.body;
     const semesterKey = `S${semester}`;
 
@@ -87,12 +106,24 @@ app.post('/cached-results', async (req, res) => {
         res.render('results', templateData);
     } catch (error) {
         console.error('Error:', error);
-        res.render('home', { error: 'Failed to fetch stored results. Please try again.' });
+        res.status(500).render('home', { error: 'Failed to fetch stored results. Please try again.' });
     }
 });
 
 app.post('/results', async (req, res) => {
+    if (!dbConnected) {
+        return res.status(503).render('home', { 
+            error: 'Database connection unavailable. Please try again later.' 
+        });
+    }
+
     const { username, password, semester } = req.body;
+    if (!username || !password || !semester) {
+        return res.status(400).render('home', { 
+            error: 'All fields (username, password, and semester) are required.' 
+        });
+    }
+
     const semesterKey = `S${semester}`;
     
     try {
@@ -172,6 +203,8 @@ app.post('/results', async (req, res) => {
                     );
                 }
             } catch (error) {
+                console.error('Scraper error:', error);
+                
                 // Handle the special case when results are not published
                 if (error.type === 'RESULTS_NOT_PUBLISHED') {
                     // Render not published template
@@ -188,10 +221,14 @@ app.post('/results', async (req, res) => {
                     if (cachedSemester) {
                         needToFetch = false;
                     } else {
-                        throw error;
+                        return res.status(500).render('home', { 
+                            error: 'Failed to fetch new results. Please try again later.' 
+                        });
                     }
                 } else {
-                    throw error;
+                    return res.status(500).render('home', { 
+                        error: 'Failed to fetch results: ' + (error.message || 'Unknown error') 
+                    });
                 }
             }
         }
@@ -214,8 +251,8 @@ app.post('/results', async (req, res) => {
 
         res.render('results', templateData);
     } catch (error) {
-        console.error('Error:', error);
-        res.render('home', { error: 'Failed to fetch results. Please try checking stored results.' });
+        console.error('Application error:', error);
+        res.status(500).render('home', { error: 'Server error. Please try again later.' });
     }
 });
 

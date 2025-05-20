@@ -1,4 +1,5 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
+const chromium = require('@sparticuz/chromium-min');
 
 // Helper function to add random delays that look like human behavior
 async function randomDelay(min = 1000, max = 3000) {
@@ -22,29 +23,25 @@ async function scrapeSemesterResults(username, password, semester) {
         password: password
     };
 
-    // Enhanced Puppeteer configuration for serverless environments like Vercel
-    const browser = await puppeteer.launch({
-        headless: 'new',
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-gpu',
-            '--disable-web-security',
-            '--disable-features=IsolateOrigins',
-            '--disable-site-isolation-trials',
-            '--single-process'
-        ],
-        ignoreHTTPSErrors: true,
-        timeout: 60000
-    });
-
+    // Set up chromium options for serverless
+    await chromium.font();
+    let browser;
+    
     try {
+        // Launch browser with optimized serverless configuration
+        browser = await puppeteer.launch({
+            args: chromium.args,
+            defaultViewport: chromium.defaultViewport,
+            executablePath: await chromium.executablePath(),
+            headless: true,
+            ignoreHTTPSErrors: true
+        });
+
         const page = await browser.newPage();
         
         // Set minimal required headers
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36');
-        await page.setDefaultNavigationTimeout(30000);
+        await page.setDefaultNavigationTimeout(20000);
         
         // Login
         await login(page, user);
