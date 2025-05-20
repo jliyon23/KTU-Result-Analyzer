@@ -1,0 +1,155 @@
+<div class="max-w-4xl mx-auto bg-white dark:bg-slate-800 rounded-xl shadow-md dark:shadow-slate-700 p-6 mt-6 transition-all duration-200">
+    <div class="flex flex-col items-center text-center p-6">
+        <div class="rounded-full bg-amber-100 dark:bg-amber-900/30 p-4 mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-amber-500 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-4">Results Not Published</h2>
+        <p class="text-slate-600 dark:text-slate-300 mb-8 max-w-lg">
+            {{message}} Your results for {{semester}} are not yet available in the KTU portal. Please check back later when the results are published.
+        </p>
+
+        {{#if studentDetails}}
+        <div class="w-full max-w-lg bg-slate-50 dark:bg-slate-700 rounded-lg p-6 mb-8">
+            <h3 class="text-lg font-semibold text-slate-800 dark:text-white mb-4 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-slate-600 dark:text-slate-300" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                </svg>
+                Student Details
+            </h3>
+            {{#if studentDetails.Name}}
+            <div class="flex flex-col space-y-3">
+                <div class="flex justify-between">
+                    <span class="text-slate-500 dark:text-slate-400 font-medium">Name:</span>
+                    <span class="text-slate-800 dark:text-white font-semibold">{{studentDetails.Name}}</span>
+                </div>
+                {{#if studentDetails.[Register Number]}}
+                <div class="flex justify-between">
+                    <span class="text-slate-500 dark:text-slate-400 font-medium">Register Number:</span>
+                    <span class="text-slate-800 dark:text-white font-semibold">{{studentDetails.[Register Number]}}</span>
+                </div>
+                {{/if}}
+                {{#if studentDetails.[Name Of College]}}
+                <div class="flex justify-between">
+                    <span class="text-slate-500 dark:text-slate-400 font-medium">College:</span>
+                    <span class="text-slate-800 dark:text-white font-semibold">{{studentDetails.[Name Of College]}}</span>
+                </div>
+                {{/if}}
+                {{#if studentDetails.Branch}}
+                <div class="flex justify-between">
+                    <span class="text-slate-500 dark:text-slate-400 font-medium">Branch:</span>
+                    <span class="text-slate-800 dark:text-white font-semibold">{{studentDetails.Branch}}</span>
+                </div>
+                {{/if}}
+            </div>
+            {{else}}
+            <p class="text-slate-500 dark:text-slate-400">Student details not available.</p>
+            {{/if}}
+        </div>
+        {{/if}}
+
+        <div class="flex gap-4 flex-wrap justify-center">
+            <a href="/" class="inline-flex items-center px-5 py-2.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 dark:focus:ring-offset-slate-800 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                </svg>
+                Back to Home
+            </a>
+            
+            <button onclick="checkAgainLater()" class="inline-flex items-center px-5 py-2.5 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 dark:focus:ring-offset-slate-800 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-slate-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                </svg>
+                Set Reminder
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="reminderModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
+        <div class="fixed inset-0 bg-slate-900 bg-opacity-75 transition-opacity"></div>
+        <div class="relative transform overflow-hidden rounded-lg bg-white dark:bg-slate-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+            <div class="bg-white dark:bg-slate-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                    <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900 sm:mx-0 sm:h-10 sm:w-10">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                        <h3 class="text-lg font-medium leading-6 text-slate-900 dark:text-white">Set a Reminder</h3>
+                        <div class="mt-4">
+                            <p class="text-sm text-slate-600 dark:text-slate-300 mb-4">
+                                We can remind you to check again in:
+                            </p>
+                            <div class="flex flex-col space-y-3">
+                                <button onclick="setReminder(1)" class="inline-flex justify-between items-center px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700">
+                                    <span>1 day</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                                <button onclick="setReminder(3)" class="inline-flex justify-between items-center px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700">
+                                    <span>3 days</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                                <button onclick="setReminder(7)" class="inline-flex justify-between items-center px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700">
+                                    <span>1 week</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-slate-50 dark:bg-slate-700 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                <button type="button" onclick="closeModal()" class="mt-3 inline-flex w-full justify-center rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-2 text-base font-medium text-slate-700 dark:text-slate-200 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function checkAgainLater() {
+        document.getElementById('reminderModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('reminderModal').classList.add('hidden');
+    }
+
+    function setReminder(days) {
+        const reminderDate = new Date();
+        reminderDate.setDate(reminderDate.getDate() + days);
+        
+        // Save to local storage
+        const reminder = {
+            semester: "{{semester}}",
+            date: reminderDate.toISOString(),
+            registerNumber: "{{studentDetails.[Register Number]}}"
+        };
+        
+        // Get existing reminders or initialize empty array
+        const reminders = JSON.parse(localStorage.getItem('ktuReminders') || '[]');
+        
+        // Add new reminder
+        reminders.push(reminder);
+        
+        // Save back to local storage
+        localStorage.setItem('ktuReminders', JSON.stringify(reminders));
+        
+        // Close modal and show confirmation
+        closeModal();
+        
+        // Show notification
+        alert(`Reminder set! We'll remind you to check again on ${reminderDate.toLocaleDateString()}`);
+    }
+</script> 

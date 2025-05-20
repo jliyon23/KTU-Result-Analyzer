@@ -1,0 +1,27 @@
+{
+  "name": "ktu-result-viewer",
+  "version": "1.0.0",
+  "description": "KTU Result Viewer Web Application",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "build:css": "tailwindcss -i ./public/css/input.css -o ./public/css/output.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2",
+    "express-handlebars": "^7.1.3",
+    "mongoose": "^8.15.0",
+    "puppeteer": "^22.8.2"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.17",
+    "nodemon": "^3.1.0",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1"
+  }
+}

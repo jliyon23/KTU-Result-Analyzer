@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KTU Result Viewer</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Heroicons (For icons) -->
+    <script src="https://unpkg.com/heroicons@0.4.2/dist/heroicons.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'grade-s': '#10b981', // Green (Emerald-500)
+                        'grade-a-plus': '#22c55e', // Green-500
+                        'grade-a': '#3b82f6', // Blue-500
+                        'grade-b-plus': '#6366f1', // Indigo-500
+                        'grade-b': '#8b5cf6', // Violet-500
+                        'grade-c-plus': '#a855f7', // Purple-500
+                        'grade-c': '#d97706', // Amber-600
+                        'grade-d': '#f97316', // Orange-500
+                        'grade-p': '#ef4444', // Red-500
+                        'grade-f': '#b91c1c', // Red-700
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Additional custom styles */
+        .dark .dark-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 dark:bg-slate-900 min-h-screen font-sans text-slate-800 dark:text-slate-100 transition-colors duration-200">
+    <!-- Reminder notification -->
+    <div id="reminderNotification" class="fixed top-4 right-4 max-w-sm w-full bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-400 dark:border-blue-600 p-4 rounded-lg shadow-lg z-50 hidden">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-400 dark:text-blue-300" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                </svg>
+            </div>
+            <div class="ml-3 flex-1">
+                <p class="text-sm text-blue-700 dark:text-blue-200" id="reminderText"></p>
+                <div class="mt-2 flex space-x-3">
+                    <button id="checkNowBtn" class="text-xs font-medium text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-100">
+                        Check now
+                    </button>
+                    <button id="dismissBtn" class="text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200">
+                        Dismiss
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bg-slate-800 dark:bg-slate-950 text-white py-4 shadow-md dark:shadow-slate-800">
+        <div class="container mx-auto px-4 md:px-6 flex justify-between items-center">
+            <h1 class="text-2xl font-bold flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-2 text-slate-300" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
+                </svg>
+                KTU Result Viewer
+            </h1>
+            <button id="theme-toggle" class="p-2 rounded-full hover:bg-slate-700 dark:hover:bg-slate-800 transition-colors">
+                <!-- Sun icon (for dark mode) -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <!-- Moon icon (for light mode) -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+            </button>
+        </div>
+    </nav>
+    <main class="container mx-auto py-6 px-4 md:px-6">
+        {{{body}}}
+    </main>
+    <footer class="mt-12 py-8 bg-slate-800 dark:bg-slate-900 text-white">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="mb-4 md:mb-0">
+                    <div class="flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-slate-300" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
+                        </svg>
+                        <span class="text-lg font-semibold">Joseph Liyon</span>
+                    </div>
+                    <p class="text-sm text-slate-400 text-center mt-1">Built with ❤️ using Node.js, Puppeteer</p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="https://github.com/jliyon23" target="_blank" class="text-slate-300 hover:text-white transition-colors duration-200">
+                        <span class="sr-only">GitHub</span>
+                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                    <a href="https://linkedin.com/in/joseph-liyon-9619ab250" target="_blank" class="text-slate-300 hover:text-white transition-colors duration-200">
+                        <span class="sr-only">LinkedIn</span>
+                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                        </svg>
+                    </a>
+                    <a href="https://josephliyon.tech" target="_blank" class="text-slate-300 hover:text-white transition-colors duration-200">
+                        <span class="sr-only">Portfolio</span>
+                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dark mode toggle functionality
+        const htmlElement = document.documentElement;
+        const themeToggle = document.getElementById('theme-toggle');
+
+        // Check for saved theme preference or use the system preference
+        const savedTheme = localStorage.getItem('theme');
+        
+        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            htmlElement.classList.add('dark');
+        } else {
+            htmlElement.classList.remove('dark');
+        }
+
+        // Toggle theme on button click
+        themeToggle.addEventListener('click', () => {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                htmlElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Check for reminders
+        function checkReminders() {
+            const reminders = JSON.parse(localStorage.getItem('ktuReminders') || '[]');
+            const now = new Date();
+            
+            // Filter active reminders (reminders with dates in the past)
+            const activeReminders = reminders.filter(r => new Date(r.date) <= now);
+            
+            if (activeReminders.length > 0) {
+                // Get the first active reminder
+                const reminder = activeReminders[0];
+                
+                // Show the notification
+                const notification = document.getElementById('reminderNotification');
+                const reminderText = document.getElementById('reminderText');
+                
+                reminderText.textContent = `It's time to check your ${reminder.semester} results again!`;
+                notification.classList.remove('hidden');
+                
+                // Set up buttons
+                const checkNowBtn = document.getElementById('checkNowBtn');
+                const dismissBtn = document.getElementById('dismissBtn');
+                
+                checkNowBtn.addEventListener('click', () => {
+                    // Remove this reminder
+                    const updatedReminders = reminders.filter(r => 
+                        !(r.semester === reminder.semester && r.registerNumber === reminder.registerNumber)
+                    );
+                    localStorage.setItem('ktuReminders', JSON.stringify(updatedReminders));
+                    
+                    // Redirect to form with register number prefilled
+                    window.location.href = '/?register=' + reminder.registerNumber + '&semester=' + reminder.semester.replace('S', '');
+                });
+                
+                dismissBtn.addEventListener('click', () => {
+                    // Remove this reminder
+                    const updatedReminders = reminders.filter(r => 
+                        !(r.semester === reminder.semester && r.registerNumber === reminder.registerNumber)
+                    );
+                    localStorage.setItem('ktuReminders', JSON.stringify(updatedReminders));
+                    
+                    // Hide notification
+                    notification.classList.add('hidden');
+                });
+            }
+        }
+        
+        // Check for reminders when page loads
+        window.addEventListener('DOMContentLoaded', checkReminders);
+    </script>
+</body>
+</html> 

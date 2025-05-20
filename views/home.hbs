@@ -1,0 +1,201 @@
+<div class="max-w-md mx-auto bg-white dark:bg-slate-800 rounded-xl shadow-md dark:shadow-slate-700 p-6 mt-8 transition-all duration-200">
+    <h2 class="text-2xl font-semibold mb-6 text-center text-slate-800 dark:text-white">Check Your Results</h2>
+    
+    {{#if error}}
+    <div class="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-800 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg mb-4 flex items-start">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+        </svg>
+        <span>{{error}}</span>
+    </div>
+    {{/if}}
+
+    <!-- Tab Navigation -->
+    <div class="flex justify-center mb-6 border-b border-slate-200 dark:border-slate-700">
+        <button onclick="switchTab('live')" id="liveTab" class="flex items-center px-4 py-3 font-medium text-sm focus:outline-none tab-active">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.05 3.636a1 1 0 010 1.414 7 7 0 000 9.9 1 1 0 11-1.414 1.414 9 9 0 010-12.728 1 1 0 011.414 0zm9.9 0a1 1 0 011.414 0 9 9 0 010 12.728 1 1 0 11-1.414-1.414 7 7 0 000-9.9 1 1 0 010-1.414zM7.879 6.464a1 1 0 010 1.414 3 3 0 000 4.243 1 1 0 11-1.415 1.414 5 5 0 010-7.07 1 1 0 011.415 0zm4.242 0a1 1 0 011.415 0 5 5 0 010 7.072 1 1 0 01-1.415-1.415 3 3 0 000-4.242 1 1 0 010-1.415z" clip-rule="evenodd" />
+            </svg>
+            Live Results
+        </button>
+        <button onclick="switchTab('stored')" id="storedTab" class="flex items-center px-4 py-3 font-medium text-sm focus:outline-none text-slate-500 dark:text-slate-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
+            </svg>
+            Stored Results
+        </button>
+    </div>
+
+    <!-- Live Results Form -->
+    <form id="liveForm" action="/results" method="POST" class="space-y-5">
+        <div>
+            <label for="username" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Register Number</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <input type="text" id="username" name="username" required
+                    class="pl-10 py-3 mt-1 block w-full rounded-md border-slate-300 dark:border-slate-600 shadow-sm focus:border-slate-500 focus:ring-slate-500 dark:bg-slate-700 dark:text-white text-sm">
+            </div>
+        </div>
+        
+        <div>
+            <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Password</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <input type="password" id="password" name="password" required
+                    class="pl-10 py-3 mt-1 block w-full rounded-md border-slate-300 dark:border-slate-600 shadow-sm focus:border-slate-500 focus:ring-slate-500 dark:bg-slate-700 dark:text-white text-sm">
+            </div>
+        </div>
+        
+        <div>
+            <label for="semester" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Semester</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
+                    </svg>
+                </div>
+                <select id="semester" name="semester" required
+                    class="pl-10 py-3 mt-1 block w-full rounded-md border-slate-300 dark:border-slate-600 shadow-sm focus:border-slate-500 focus:ring-slate-500 dark:bg-slate-700 dark:text-white text-sm">
+                    <option value="">Select Semester</option>
+                    <option value="1">S1</option>
+                    <option value="2">S2</option>
+                    <option value="3">S3</option>
+                    <option value="4">S4</option>
+                    <option value="5">S5</option>
+                    <option value="6">S6</option>
+                    <option value="7">S7</option>
+                    <option value="8">S8</option>
+                </select>
+            </div>
+        </div>
+        
+        <button type="submit"
+            class="w-full bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white py-2.5 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800 flex items-center justify-center transition-colors font-medium text-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+            </svg>
+            Check Live Results
+        </button>
+    </form>
+
+    <!-- Stored Results Form -->
+    <form id="storedForm" action="/cached-results" method="POST" class="space-y-5 hidden">
+        <div>
+            <label for="stored-username" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Register Number</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <input type="text" id="stored-username" name="username" required
+                    class="pl-10 py-3 mt-1 block w-full rounded-md border-slate-300 dark:border-slate-600 shadow-sm focus:border-slate-500 focus:ring-slate-500 dark:bg-slate-700 dark:text-white text-sm">
+            </div>
+        </div>
+        
+        <div>
+            <label for="stored-semester" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Semester</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
+                    </svg>
+                </div>
+                <select id="stored-semester" name="semester" required
+                    class="pl-10 py-3 mt-1 block w-full rounded-md border-slate-300 dark:border-slate-600 shadow-sm focus:border-slate-500 focus:ring-slate-500 dark:bg-slate-700 dark:text-white text-sm">
+                    <option value="">Select Semester</option>
+                    <option value="1">S1</option>
+                    <option value="2">S2</option>
+                    <option value="3">S3</option>
+                    <option value="4">S4</option>
+                    <option value="5">S5</option>
+                    <option value="6">S6</option>
+                    <option value="7">S7</option>
+                    <option value="8">S8</option>
+                </select>
+            </div>
+        </div>
+        
+        <button type="submit"
+            class="w-full bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white py-2.5 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800 flex items-center justify-center transition-colors font-medium text-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+            </svg>
+            Check Stored Results
+        </button>
+    </form>
+</div>
+
+<style>
+.tab-active {
+    color: #0f172a;
+    border-bottom: 2px solid #0f172a;
+}
+
+.dark .tab-active {
+    color: white;
+    border-bottom: 2px solid white;
+}
+</style>
+
+<script>
+function switchTab(tab) {
+    const liveForm = document.getElementById('liveForm');
+    const storedForm = document.getElementById('storedForm');
+    const liveTab = document.getElementById('liveTab');
+    const storedTab = document.getElementById('storedTab');
+
+    if (tab === 'live') {
+        liveForm.classList.remove('hidden');
+        storedForm.classList.add('hidden');
+        liveTab.classList.add('tab-active');
+        storedTab.classList.remove('tab-active');
+        storedTab.classList.add('text-slate-500', 'dark:text-slate-400');
+        liveTab.classList.remove('text-slate-500', 'dark:text-slate-400');
+    } else {
+        liveForm.classList.add('hidden');
+        storedForm.classList.remove('hidden');
+        liveTab.classList.remove('tab-active');
+        storedTab.classList.add('tab-active');
+        liveTab.classList.add('text-slate-500', 'dark:text-slate-400');
+        storedTab.classList.remove('text-slate-500', 'dark:text-slate-400');
+    }
+}
+
+// Check for URL parameters and prefill form
+window.addEventListener('DOMContentLoaded', function() {
+    // Get URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const registerNumber = urlParams.get('register');
+    const semester = urlParams.get('semester');
+    
+    if (registerNumber) {
+        // Fill live form
+        document.getElementById('username').value = registerNumber;
+        document.getElementById('stored-username').value = registerNumber;
+        
+        // Focus on password field
+        setTimeout(() => {
+            document.getElementById('password').focus();
+        }, 100);
+    }
+    
+    if (semester) {
+        document.getElementById('semester').value = semester;
+        document.getElementById('stored-semester').value = semester;
+    }
+    
+    // If we have register but no semester, switch to stored results tab
+    if (registerNumber && !semester) {
+        switchTab('stored');
+    }
+});
+</script> 
