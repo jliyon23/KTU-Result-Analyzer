@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "build": "npm install"
+    "build": "npm install",
+    "ping": "node ping-service.js"
   },
   "keywords": [],
   "author": "",

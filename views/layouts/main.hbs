@@ -12,6 +12,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Heroicons (For icons) -->
     <script src="https://unpkg.com/heroicons@0.4.2/dist/heroicons.js"></script>
+    <!-- Loading CSS -->
+    <link rel="stylesheet" href="/css/loading.css">
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -44,6 +46,13 @@
     </style>
 </head>
 <body class="bg-slate-100 dark:bg-slate-900 min-h-screen font-sans text-slate-800 dark:text-slate-100 transition-colors duration-200">
+    <!-- Loading Screen -->
+    <div id="loading-container">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Starting up the server...</div>
+        <div class="mt-2 text-sm text-gray-500">This may take a moment on the first load</div>
+    </div>
+
     <!-- Reminder notification -->
     <div id="reminderNotification" class="fixed top-4 right-4 max-w-sm w-full bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-400 dark:border-blue-600 p-4 rounded-lg shadow-lg z-50 hidden">
         <div class="flex">
@@ -198,7 +207,10 @@
         }
         
         // Check for reminders when page loads
-        window.addEventListener('DOMContentLoaded', checkReminders);
+        window.addEventListener('load', checkReminders);
     </script>
+    
+    <!-- Loading script -->
+    <script src="/js/loading.js"></script>
 </body>
 </html> 
