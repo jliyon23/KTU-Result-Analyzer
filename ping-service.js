@@ -1,7 +1,7 @@
 const https = require('https');
 
 // Your Render URL (replace with your actual app URL)
-const APP_URL = 'https://your-app-name.onrender.com/health';
+const APP_URL = 'https://kturesult.onrender.com/health';
 // Ping interval in milliseconds (14 minutes = 840000ms)
 const PING_INTERVAL = 840000;
 
