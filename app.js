@@ -46,19 +46,14 @@ app.engine('hbs', engine({
 app.set('view engine', 'hbs');
 app.set('views', './views');
 
-// Health check route for Azure
-app.get('/api/health', (req, res) => {
+// Health check route
+app.get('/health', (req, res) => {
     res.json({
         status: 'ok',
         timestamp: new Date().toISOString(),
         dbConnected: dbConnected,
         environment: process.env.NODE_ENV || 'development'
     });
-});
-
-// Azure Web App warmup route
-app.get('/warmup', (req, res) => {
-    res.status(200).send('Application warmed up');
 });
 
 // Routes
